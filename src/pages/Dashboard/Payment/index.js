@@ -24,7 +24,7 @@ export default function Payment() {
         <EnrollmentErrorText>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</EnrollmentErrorText>
       </ErrorContainer>
       :
-      ticket ?
+      ticket ? //Aqui tem quer ser feita a validação de reservado ou pago para ir para a página de cartão de crédito, caso ja esteja pago prossegue normal
         <>
           <TicketSelectedContainer>
             <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
@@ -32,9 +32,9 @@ export default function Payment() {
             <Ticket>
               <TicketContent>
                 {ticket.TicketType.includesHotel
-                  ? ticket.TicketType.name.split(' ')[0] + ' + Com Hotel'
+                  ? ticket.TicketType.name.replace('Presencial', 'Presencial +')
                   : !ticket.TicketType.isRemote
-                    ? ticket.TicketType.name.split(' ')[0] + ' + Sem Hotel'
+                    ? ticket.TicketType.name.replace('Presencial', 'Presencial +')
                     : ticket.TicketType.name}
               </TicketContent>
               <TicketPrice>
@@ -57,7 +57,8 @@ export default function Payment() {
             </PaymentContent>
           </PaymentContainer>
         </>
-        : <Tickets
+        :
+        <Tickets
           setTicketPrice={setTicketPrice}
           setHotelPrice={setHotelPrice}
           totalAmount={totalAmount}

@@ -20,7 +20,7 @@ export default function Hotel() {
           </HotelErrorText>
         </ErrorContainer>
         :
-        'hOTEIS'
+        'HOTEIS'
   );
 }
 
