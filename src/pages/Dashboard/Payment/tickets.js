@@ -84,7 +84,7 @@ export default function Tickets({ setTicketPrice, setHotelPrice, totalAmount, ti
         reservationMade ? (
           <Payment />
         ) : (
-          <TicketContainer>
+          <>
             <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
             <TicketTitle>Primeiro, escolha sua modalidade de ingresso</TicketTitle>
             <TicketInfos>
@@ -144,14 +144,11 @@ export default function Tickets({ setTicketPrice, setHotelPrice, totalAmount, ti
                 {selectedHotel && renderReservationSection()}
               </>
             )}
-          </TicketContainer>
+          </>
         )}
     </>
   );
 }
-
-const TicketContainer = styled.div`
-`;
 
 const StyledTypography = styled(Typography)`
   margin-bottom: 20px!important;
@@ -200,4 +197,5 @@ const ReserveButton = styled.button`
   box-shadow: 0px 2px 10px 0px #00000040;
   margin-top: 25px;
   cursor: pointer;
-`;
+`;//
+

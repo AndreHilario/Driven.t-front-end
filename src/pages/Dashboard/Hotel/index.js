@@ -7,12 +7,12 @@ export default function Hotel() {
   const { ticket } = useTicketByUserId();
 
   return (
-    !enrollment || !ticket || ticket?.status === 'RESERVED' ?
+    (!enrollment || !ticket || ticket?.status === 'RESERVED') ?
       <ErrorContainer>
         <HotelErrorText>Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</HotelErrorText>
       </ErrorContainer>
       :
-      ticket?.status === 'PAID' && (ticket.TicketType.isRemote === true || ticket.TicketType.includesHotel === false) ?
+      (ticket?.status === 'PAID' && (ticket.TicketType.isRemote === true || ticket.TicketType.includesHotel === false)) ?
         <ErrorContainer>
           <HotelErrorText>
             Sua modalidade de ingresso não inclui hospedagem <br />
