@@ -1,3 +1,9 @@
+/* eslint-disable */
+import Pag from '../../../components/Pagamentos/Pagamento';
+
 export default function Payment() {
-  return 'Pagamento: Em breve!';
+  return (
+    <Pag />
+  );
 }
+
