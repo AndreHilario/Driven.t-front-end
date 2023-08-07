@@ -7,11 +7,7 @@ import { toast } from 'react-toastify';
 import useToken from '../../hooks/useToken';
 import { pagar } from '../../services/paymentApi';
 
-
-
-
-
-export default function AreaDePagamentoComCartao({ ticketData }) {
+export default function AreaDePagamentoComCartao({ ticket }) {
   const token = useToken()
   const [form, setForm] = useState({
     cvc: '',
@@ -72,12 +68,10 @@ export default function AreaDePagamentoComCartao({ ticketData }) {
  if (nomeValido) { toast('Nome Invalido')
       return }
    
-   
-
     const issuer = 'mastercard';
     
     const bodyMontado = {
-      ticketId: ticketData.id,
+      ticketId: ticket.id,
       cardData: {
         issuer: issuer,
         number: datanumber,
@@ -173,7 +167,7 @@ p{
   font-weight: 400;
   text-align: center;
 }
-`
+`;
 
 const PagamentoBox=styled.div`
   display: flex;
@@ -200,7 +194,7 @@ const PagamentoBox=styled.div`
   input::placeholder {
   color: #b0b0b0;
 }
-`
+`;
 
 const TopBox=styled.div`
   width: 290px;
@@ -211,19 +205,19 @@ const TopBox=styled.div`
   input {
     width: 100%;
   }
-`
+`;
 
 const InternalBox=styled.div`
   width: 290px;
   display: flex;
   justify-content: space-between;
-`
+`;
 
 const EntradaExp=styled.input`
   width: 57%;
-`
+`;
 
 const EntradaCvc=styled.input`
   text-align: center;
   width: 32%;
-`
+`;
