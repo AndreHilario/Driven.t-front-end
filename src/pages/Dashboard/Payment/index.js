@@ -3,8 +3,9 @@ import useTicketByUserId from '../../../hooks/api/useTicketByUserId';
 import Tickets, { TicketTitle } from './tickets';
 import Typography from '@material-ui/core/Typography';
 import { useEffect, useState } from 'react';
-import { CircleCheckFill } from 'akar-icons';
 import useEnrollment from '../../../hooks/api/useEnrollment';
+import ConfirmedPayment from '../../../components/Pagamentos/ConfirmedPayment';
+import AreaDePagamentoComCartao from '../../../components/Pagamentos/Cartãoform';
 
 export default function Payment() {
   const [ticketPrice, setTicketPrice] = useState(0);
@@ -24,7 +25,7 @@ export default function Payment() {
         <EnrollmentErrorText>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</EnrollmentErrorText>
       </ErrorContainer>
       :
-      ticket ? //Aqui tem quer ser feita a validação de reservado ou pago para ir para a página de cartão de crédito, caso ja esteja pago prossegue normal
+      ticket ?
         <>
           <TicketSelectedContainer>
             <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
@@ -48,13 +49,11 @@ export default function Payment() {
           </TicketSelectedContainer>
           <PaymentContainer>
             <TicketTitle>Pagamento</TicketTitle>
-            <PaymentContent>
-              <CircleCheckFill size={44} color="#36B853" />
-              <Text>
-                <span>Pagamento confirmado!</span>
-                <p>Prossiga para escolha de hospedagem e atividades</p>
-              </Text>
-            </PaymentContent>
+            {ticket.status === 'RESERVED' ?
+              <AreaDePagamentoComCartao ticket={ticket} />
+              :
+              <ConfirmedPayment />
+            }
           </PaymentContainer>
         </>
         :
@@ -118,24 +117,3 @@ const TicketPrice = styled.div`
 const PaymentContainer = styled.main`
   margin-top: 40px;
 `;
-
-const PaymentContent = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 25px;
-`;
-
-const Text = styled.div`
-  display: flex;
-  flex-direction: column;
-  font-size: 16px;
-  color: #454545;
-  span {
-    font-weight: 700;
-  }
-  p {
-    font-weight: 400;
-  }
-`;
-
