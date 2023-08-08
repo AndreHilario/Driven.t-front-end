@@ -4,7 +4,6 @@ import HotelContext from '../../../contexts/HotelContext';
 import { useContext, useEffect, useState } from 'react';
 import hotelsFake from '../Hotel/mockHotels';
 import { Link } from 'react-router-dom';
-import { filterAccomodationType } from '../Hotel/utils';
 
 export default function HotelConfirmation() {
   const [image, setImage] = useState();
@@ -18,14 +17,11 @@ export default function HotelConfirmation() {
   useEffect(() => {
     const types = ['Single', 'Double', 'Triple'];
     const hotelSelected = hotelsFake[hotelData.hotelId - 1];
-    console.log(hotelSelected);
-    console.log(hotelData);
 
     setImage(hotelSelected.image);
     setName(hotelSelected.name);
     setNumber(hotelSelected.Rooms[hotelData.roomId - 1].name);
     setType(types[hotelSelected.Rooms.length - 1]);
-    console.log('pessoas no quarto: ', hotelSelected.Rooms[hotelData.roomId - 1].beds);
     let bedsOccuped = 0;
     (hotelSelected.Rooms[hotelData.roomId - 1].beds)?.forEach((data) => {
       if(data.bed === 'personOccupied') {
