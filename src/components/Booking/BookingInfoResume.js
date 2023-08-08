@@ -27,11 +27,8 @@ export default function BookingResumePage() {
   const fetchList = () => {
     if (bookingByUserId.id) {
       if (userRoom) {
-
         try {
-
           // Limpar o histórico de reserva anterior 
-          
           setBookingByUserId([]);
           setUserRoom(null);
   
@@ -63,10 +60,8 @@ export default function BookingResumePage() {
     if (occupants < 2) return 'Apenas você';
     else return `Você e mais ${occupants - 1} pessoa${occupants > 2 ? 's' : ''}`;
   }  
-
   if (userHotel === true && ticketStatus === 'PAID') {
     if (bookingByUserId.id && toForward === false) {
-      
       return (
         <BookingResumeContainer>
           <MainTitle>
@@ -174,5 +169,3 @@ font-size: 12px;
 line-height: 14px;
   }
 `;
-
-

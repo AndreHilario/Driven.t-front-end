@@ -30,7 +30,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts  start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -133,6 +133,7 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
     "git-commit-msg-linter": "^3.2.8",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2"
