@@ -16,7 +16,7 @@ export default function Room({
   selectedPersonIndex,
   setSelectedPersonIndex,
 }) {
-  const [ setRoomSelected] = useState(null);
+  const [ setRoomSelected ] = useState(null);
 
   function checkRenderView(hotelId, selectedHotelId) {
     if (hotelId === selectedHotelId) {
