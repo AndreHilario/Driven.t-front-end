@@ -26,7 +26,7 @@ export default function ErrorScreen() {
 
 const ErrorContainer = styled.div`
   width: 100%;
-  height: 74vh;
+  height: 38.5em;
 
   display: flex;
   align-items: center;
