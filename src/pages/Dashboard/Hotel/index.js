@@ -1,44 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import useTicketByUserId from '../../../hooks/api/useTicketByUserId';
 import ErrorScreen from '../../../components/Hotels/NoHaveTicketsComponent';
-import { calculateOcuppiedRooms } from './utils';
 import colors from '../../../constants/colors';
-import HotelContext from '../../../contexts/HotelContext';
+import { getHotel } from '../../../services/hotelApi';
+import useToken from '../../../hooks/useToken';
 import HotelComponent from '../../../components/Hotels/HotelComponent';
 import Room from '../../../components/Hotels/Room';
-import { Link } from 'react-router-dom';
-import useToken from '../../../hooks/useToken';
-import { hotelApi } from '../../../services/hotelApi';
-import { allBookings } from '../../../services/bookingUserIdApi';
 
 export default function Hotel() {
-  const { enrollment } = useEnrollment();
-  const { ticket } = useTicketByUserId();
-  const [hotels, setHotels] = useState([]);
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
-  const [selectedRoomId, setSelectedRoomId] = useState(null);
-  const [selectedPersonIndex, setSelectedPersonIndex] = useState(null);
-  const [rooms, setRooms] = useState(null);
-  const { setHotelData } = useContext(HotelContext);
-  const token = useToken();
-
-  useEffect(async() => {
-    const data = await hotelApi(token);
-    const bookings = await allBookings(token);
-    const result = calculateOcuppiedRooms(data, bookings);
-    setRooms(result);
-    setHotels(data);
-    const hotelData = {
-      hotelId: selectedHotelId,
-      roomId: selectedRoomId,
-    };
-    setHotelData(hotelData);
-  }, [selectedHotelId, selectedRoomId]);
-
+  const enrollment = useEnrollment();
+  const ticket = useTicketByUserId();
   const isEnrollmentValid = !enrollment || !ticket || ticket?.status === 'RESERVED';
   const isRoomSelectionValid = ticket?.status === 'PAID' && (ticket.TicketType.isRemote === true || ticket.TicketType.includesHotel === false);
+  const token = useToken(); 
+
+  const [hotels, setHotels] = useState(null);
+  const [rooms, setRooms] = useState(null);
+
+  useEffect(async() => {
+    const hotel = await getHotel(token);
+    setHotels(hotel);
+  }, []);
 
   return (
     <Main>
@@ -49,47 +33,21 @@ export default function Hotel() {
           <h1>Escolha de hotel e quarto</h1>
           <p>Primeiro, escolha seu hotel</p>
 
-          <HotelsContainer>
-            {hotels.map((hotel) => (
-              <HotelComponent
-                key={hotel.id}
-                id={hotel.id}
-                name={hotel.name}
-                image={hotel.image}
-                Rooms={hotel.Rooms}
-                isSelected={selectedHotelId === hotel.id}
-                selectedHotelId={selectedHotelId}
-                setSelectedHotelId={setSelectedHotelId}
-              />
-            ))}
-          </HotelsContainer>
-          {selectedHotelId !== null && (
+          {hotels? (
+            <HotelsContainer>
+              {hotels.map((hotel) => {
+                return <HotelComponent key={hotel.id} id={hotel.id} image={hotel.image} name={hotel.name} setRooms={setRooms}></HotelComponent>;
+              })}
+            </HotelsContainer>
+          ) : '' }
+          {rooms?(
             <RoomContainer>
-              <Block>
-                <p>Ótima pedida! agora escolha seu quarto.</p>
-              </Block>
-              {rooms.map((room) => (
-                <Room
-                  key={room.id + room.name}
-                  id={room.id}
-                  hotelId={room.hotelId}
-                  type={room.capacity}
-                  number={room.name}
-                  beds={room.beds}
-                  selectedHotelId={selectedHotelId}
-                  selectedRoomId={selectedRoomId}
-                  setSelectedRoomId={setSelectedRoomId}
-                  selectedPersonIndex={selectedPersonIndex}
-                  setSelectedPersonIndex={setSelectedPersonIndex}
-                />
-              ))}
+              {rooms.map((room) => {
+                return <Room key={room.id} room={room}></Room>;
+              })}
             </RoomContainer>
-          )}
-          {selectedRoomId && (
-            <Link to="/dashboard/confirmation">
-              <ButtonContainer>RESERVAR QUARTO</ButtonContainer>
-            </Link>
-          )}
+          ) : ('')
+          }
         </>
       )}
     </Main>

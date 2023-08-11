@@ -15,3 +15,4 @@ export async function allBookings(token) {
 
   return response.data;
 };
+

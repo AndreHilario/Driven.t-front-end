@@ -4,64 +4,14 @@ import person from '../../assets/images/person.svg';
 import personOccupied from '../../assets/images/filledPerson.svg';
 import personSelected from '../../assets/images/pinkPerson.svg';
 import { useState } from 'react';
-
-export default function Room({
-  beds,
-  hotelId,
-  selectedHotelId,
-  id,
-  number,
-  selectedRoomId,
-  setSelectedRoomId,
-  selectedPersonIndex,
-  setSelectedPersonIndex,
-}) {
-  const [ setRoomSelected ] = useState(null);
-
-  function checkRenderView(hotelId, selectedHotelId) {
-    if (hotelId === selectedHotelId) {
-      return true;
-    }
-    return false;
-  }
-
-  function isDisabled(beds) {
-    let numberOfBedsOccupieds = 0;
-    beds.forEach((bed) => {
-      if (bed.bed !== 'person') {
-        numberOfBedsOccupieds++;
-      }
-    });
-    return numberOfBedsOccupieds === beds.length;
-  }
-
-  const canRender = checkRenderView(hotelId, selectedHotelId);
-  const disabled = isDisabled(beds);
-
-  return canRender ? (
-    <Main onClick={() => setSelectedRoomId(id)} disabled={disabled} roomSelected={selectedRoomId === id} >
-      <div>{number}</div>
-      <div>
-        {beds.map((bed, index) => (
-          <IconPerson
-            key={index}
-            src={
-              selectedPersonIndex !== null && selectedPersonIndex === number + index && bed.bed !== 'personOccupied'
-                ? personSelected
-                : bed.bed === 'person'
-                  ? person
-                  : personOccupied
-            }
-            alt='person'
-            onClick={() => {
-              setSelectedPersonIndex(selectedPersonIndex === number + index ? null : number + index);
-              setRoomSelected(selectedPersonIndex === number + index ? null : number + index);
-            }}
-          />
-        ))}
-      </div>
+export default function Room({ room }) {
+  console.log(room);
+  const { id, name, capacity, hotelId } = room;
+  return (
+    <Main>
+      <div>{name}</div>
     </Main>
-  ) : null;
+  );
 }
 
 const Main = styled.div`
@@ -76,18 +26,6 @@ const Main = styled.div`
 
   border: 1px solid ${colors.itemBackground};
   border-radius: 10px;
-
-  background-color: ${(props) => {
-    if (props.disabled) {
-      return colors.disabledBackground;
-    } else if (props.roomSelected) {
-      return colors.selectedItemBackground;
-    } else {
-      return 'initial';
-    }
-  }};
-
-  pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
 `;
 
 const IconPerson = styled.img`

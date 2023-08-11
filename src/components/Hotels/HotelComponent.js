@@ -1,8 +1,23 @@
 import styled from 'styled-components';
 import colors from '../../constants/colors';
 import { filterAccomodationType, sumVacancyOnRooms } from '../../pages/Dashboard/Hotel/utils';
+import { useEffect, useState } from 'react';
+import { getRoomsByHotelId } from '../../services/hotelApi';
+import useToken from '../../hooks/useToken';
 
-export default function HotelComponent({ id, image, name, isSelected, setSelectedHotelId, Rooms }) {
+export default function HotelComponent({ id, image, name, isSelected, setSelectedHotelId, setRooms }) {
+  const [vacancy, setVacancy] = useState(null);
+  const [accomodation, setAccomodation] = useState(null);
+
+  const token = useToken();
+
+  useEffect(async() => {
+    const { Rooms } = await getRoomsByHotelId(token, id);
+    setVacancy(sumVacancyOnRooms(Rooms));
+    setAccomodation(filterAccomodationType(Rooms));
+    setRooms(Rooms);
+  }, []);
+
   return (
     <Main onClick={() => setSelectedHotelId(id)} isSelected={isSelected}>
       <div>
@@ -12,10 +27,10 @@ export default function HotelComponent({ id, image, name, isSelected, setSelecte
         <HotelInformations>
           <h2>{name}</h2>
           <h6><strong>Tipos de acomodação:</strong></h6>
-          <Description>{filterAccomodationType(Rooms)}</Description>
+          <Description>{accomodation}</Description>
           <h6><strong>Vagas disponíveis:</strong></h6>
 
-          <Description>{sumVacancyOnRooms(Rooms)}</Description>
+          <Description>{vacancy}</Description>
         </HotelInformations>
       </div>
     </Main>
