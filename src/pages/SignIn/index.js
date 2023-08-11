@@ -13,6 +13,7 @@ import EventInfoContext from '../../contexts/EventInfoContext';
 import UserContext from '../../contexts/UserContext';
 
 import useSignIn from '../../hooks/api/useSignIn';
+import GitHubButton from '../../components/LoginGitHubButton';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -55,6 +56,7 @@ export default function SignIn() {
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
       </Row>
+      <GitHubButton />
     </AuthLayout>
   );
 }
