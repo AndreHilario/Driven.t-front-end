@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getRoomsByHotelId } from '../../services/hotelApi';
 import useToken from '../../hooks/useToken';
 
-export default function HotelComponent({ id, image, name, isSelected, setSelectedHotelId, setRooms }) {
+export default function HotelComponent({ id, image, name, setRooms }) {
   const [vacancy, setVacancy] = useState(null);
   const [accomodation, setAccomodation] = useState(null);
 
@@ -19,7 +19,7 @@ export default function HotelComponent({ id, image, name, isSelected, setSelecte
   }, []);
 
   return (
-    <Main onClick={() => setSelectedHotelId(id)} isSelected={isSelected}>
+    <Main>
       <div>
         <ImageCard>
           <img src={image} alt='name' />

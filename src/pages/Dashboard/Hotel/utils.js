@@ -41,20 +41,35 @@ export function createBedsArray(capacity, numberOfOccupiedBeds) {
   return beds;
 }
 
-export function calculateOcuppiedRooms(hotelsWithRooms, bookings) {
-  const rooms = [];
-  hotelsWithRooms.forEach((hotel) => rooms.push(...hotel.Rooms));
+// export function calculateOcuppiedRoom(hotelsWithRooms, bookings) {
+//   const rooms = [];
+//   hotelsWithRooms.forEach((hotel) => rooms.push(...hotel.Rooms));
 
-  for (let i = 0; i < rooms.length; i++) {
-    const room = rooms[i];
-    const bookingsForRoom = bookings.filter((booking) => {
-      return (
-        room.id === booking.roomId &&
-          room.hotelId === booking.hotelId
-      );
-    });
+//   for (let i = 0; i < rooms.length; i++) {
+//     const room = rooms[i];
+//     const bookingsForRoom = bookings.filter((booking) => {
+//       return (
+//         room.id === booking.roomId &&
+//           room.hotelId === booking.hotelId
+//       );
+//     });
 
-    rooms[i].beds = createBedsArray(room.capacity, bookingsForRoom.length);
-  }
-  return rooms;
+//     rooms[i].beds = createBedsArray(room.capacity, bookingsForRoom.length);
+//   }
+// };
+
+export function calculateOcuppiedRooms(room, bookings) {
+  const roomCopy = { ...room }; // Create a copy of the room object
+  
+  const bookingsForRoom = bookings.filter((booking) => {
+    return (
+      roomCopy.id === booking.Room.id && // Compare with booking's Room.id
+      roomCopy.hotelId === booking.Room.hotelId // Compare with booking's Room.hotelId
+    );
+  });
+
+  roomCopy.beds = createBedsArray(roomCopy.capacity, bookingsForRoom.length);
+
+  return roomCopy;
 }
+
