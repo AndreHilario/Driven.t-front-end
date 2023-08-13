@@ -8,28 +8,40 @@ import { bookingByRoomId } from '../../services/bookingUserIdApi';
 import useToken from '../../hooks/useToken';
 import { calculateOcuppiedRooms } from '../../pages/Dashboard/Hotel/utils';
 
-export default function Room({ room }) {
+export default function Room({ room, selected, setSelectedRoomId }) {
   const { id, name, capacity, hotelId } = room;
   const token = useToken();
-
   const [beds, setBeds] = useState(null);
-
+  const [isRoomSelected, setIsRoomSelected] = useState(false);
   useEffect(async() => {
     const bookings = await bookingByRoomId(token, id);
     const { beds } = calculateOcuppiedRooms(room, bookings);
     setBeds(beds);
   }, []);
+  
+  useEffect(() => {
+    setIsRoomSelected(selected);
+  }, [selected]);
+
   return (
-    <Main>
-      <div>{name}</div>
+    <Main onClick={() => { setSelectedRoomId(id); setIsRoomSelected(true); }} selected={selected}>
       <div>
-        {beds?
-          (
-            beds.map((beds) => {
-              return <img src={beds.bed === 'person'? person : beds.bed === 'personOccupied' ? personOccupied : ''} alt='bed'/>;
-            })
-          ) : ('')
-        }
+        {name}
+      </div>
+      <div>
+        {beds ? (
+          beds.map((bed, index) => {
+            return (
+              <img
+                key={index}
+                src={bed.bed === 'person' && isRoomSelected && index === 0 ? personSelected : bed.bed === 'personOccupied' ? personOccupied : person}
+                alt='bed'
+              />
+            );
+          })
+        ) : (
+          ''
+        )}
       </div>
     </Main>
   );
@@ -45,6 +57,7 @@ const Main = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  background-color: ${(props) => props.selected ? colors.selectedItemBackground : 'initial'};
   border: 1px solid ${colors.itemBackground};
   border-radius: 10px;
 `;

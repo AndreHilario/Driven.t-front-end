@@ -8,18 +8,18 @@ import useToken from '../../hooks/useToken';
 export default function HotelComponent({ id, image, name, setRooms }) {
   const [vacancy, setVacancy] = useState(null);
   const [accomodation, setAccomodation] = useState(null);
-
+  const [roomFromThisHote, setRoomFromThisHote] = useState(null);
   const token = useToken();
 
   useEffect(async() => {
     const { Rooms } = await getRoomsByHotelId(token, id);
     setVacancy(sumVacancyOnRooms(Rooms));
     setAccomodation(filterAccomodationType(Rooms));
-    setRooms(Rooms);
+    setRoomFromThisHote(Rooms);
   }, []);
 
   return (
-    <Main>
+    <Main onClick={() => setRooms(roomFromThisHote)}>
       <div>
         <ImageCard>
           <img src={image} alt='name' />

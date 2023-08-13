@@ -4,24 +4,28 @@ import HotelContext from '../../../contexts/HotelContext';
 import { useContext, useEffect, useState } from 'react';
 import hotelsFake from '../Hotel/mockHotels';
 import { Link } from 'react-router-dom';
+import { bookingUserId } from '../../../services/bookingUserIdApi';
+import useToken from '../../../hooks/useToken';
 
 export default function HotelConfirmation() {
+  const token = useToken();
   const [image, setImage] = useState();
   const [name, setName] = useState();
   const [type, setType] = useState();
   const [number, setNumber] = useState();
   const [vacancy, setVacancy] = useState();
-
+  const [booking, setBooking] = useState(null);
   const { hotelData } = useContext(HotelContext);
 
-  useEffect(() => {
+  useEffect(async() => {
     const types = ['Single', 'Double', 'Triple'];
     const hotelSelected = hotelsFake[hotelData.hotelId - 1];
-
-    setImage(hotelSelected.image);
-    setName(hotelSelected.name);
-    setNumber(hotelSelected.Rooms[hotelData.roomId - 1].name);
-    setType(types[hotelSelected.Rooms.length - 1]);
+    const userBooking = await bookingUserId(token);
+    setBooking(userBooking);
+    // setImage(hotelSelected.image);
+    // setName(hotelSelected.name);
+    // setNumber(hotelSelected.Rooms[hotelData.roomId - 1].name);
+    // setType(types[hotelSelected.Rooms.length - 1]);
     let bedsOccuped = 0;
     (hotelSelected.Rooms[hotelData.roomId - 1].beds)?.forEach((data) => {
       if(data.bed === 'personOccupied') {
@@ -29,7 +33,8 @@ export default function HotelConfirmation() {
       }
     });
     setVacancy(bedsOccuped);
-  }, []);
+  }, []); 
+  console.log(booking);
 
   return (
     <Main>

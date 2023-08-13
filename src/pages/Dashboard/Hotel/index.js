@@ -18,6 +18,7 @@ export default function Hotel() {
 
   const [hotels, setHotels] = useState(null);
   const [rooms, setRooms] = useState(null);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   useEffect(async() => {
     const hotel = await getHotel(token);
@@ -36,18 +37,38 @@ export default function Hotel() {
           {hotels? (
             <HotelsContainer>
               {hotels.map((hotel) => {
-                return <HotelComponent key={hotel.id} id={hotel.id} image={hotel.image} name={hotel.name} setRooms={setRooms}></HotelComponent>;
+                return( 
+                  <HotelComponent 
+                    key={hotel.id} 
+                    id={hotel.id} 
+                    image={hotel.image} 
+                    name={hotel.name} 
+                    setRooms={setRooms} 
+                  />
+                );
               })}
             </HotelsContainer>
           ) : '' }
           {rooms?(
             <RoomContainer>
               {rooms.map((room) => {
-                return <Room key={room.id} room={room}></Room>;
+                return (
+                  <Room 
+                    key={room.id} 
+                    room={room}
+                    setSelectedRoomId={setSelectedRoomId}
+                    selected={selectedRoomId === room.id}
+                  />
+                );
               })}
             </RoomContainer>
           ) : ('')
           }
+          {selectedRoomId? (
+            <ButtonContainer>
+              <a href='/dashboard/confirmation'>RESERVAR QUARTO</a>
+            </ButtonContainer>
+          ) : null }
         </>
       )}
     </Main>
