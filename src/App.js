@@ -18,7 +18,6 @@ import Certificate from './pages/Dashboard/Certificate';
 import { EventInfoProvider } from './contexts/EventInfoContext';
 import { UserProvider } from './contexts/UserContext';
 import useToken from './hooks/useToken';
-import HotelConfirmation from './pages/Dashboard/HotelConfirmation';
 import { HotelProvider } from './contexts/HotelContext';
 
 export default function App() {
@@ -44,7 +43,6 @@ export default function App() {
                   <Route path="subscription" element={<FillSubscription />} />
                   <Route path="payment" element={<Payment />} />
                   <Route path="hotel" element={<Hotel />} />
-                  <Route path="confirmation" element={<HotelConfirmation />} />
                   <Route path="activities" element={<Activities />} />
                   <Route path="certificate" element={<Certificate />} />
                   <Route index path="*" element={<Navigate to="/dashboard/subscription" />} />

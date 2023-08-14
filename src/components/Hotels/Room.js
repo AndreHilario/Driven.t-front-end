@@ -3,65 +3,48 @@ import colors from '../../constants/colors';
 import person from '../../assets/images/person.svg';
 import personOccupied from '../../assets/images/filledPerson.svg';
 import personSelected from '../../assets/images/pinkPerson.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { bookingByRoomId } from '../../services/bookingUserIdApi';
+import useToken from '../../hooks/useToken';
+import { calculateOcuppiedRooms } from '../../pages/Dashboard/Hotel/utils';
 
-export default function Room({
-  beds,
-  hotelId,
-  selectedHotelId,
-  id,
-  number,
-  selectedRoomId,
-  setSelectedRoomId,
-  selectedPersonIndex,
-  setSelectedPersonIndex,
-}) {
-  const [ setRoomSelected ] = useState(null);
+export default function Room({ room, selected, setSelectedRoomId }) {
+  const { id, name } = room;
+  const token = useToken();
+  const [beds, setBeds] = useState(null);
+  const [isRoomSelected, setIsRoomSelected] = useState(false);
+  useEffect(async() => {
+    const bookings = await bookingByRoomId(token, id);
+    const { beds } = calculateOcuppiedRooms(room, bookings);
+    setBeds(beds);
+  }, []);
+  
+  useEffect(() => {
+    setIsRoomSelected(selected);
+  }, [selected]);
 
-  function checkRenderView(hotelId, selectedHotelId) {
-    if (hotelId === selectedHotelId) {
-      return true;
-    }
-    return false;
-  }
-
-  function isDisabled(beds) {
-    let numberOfBedsOccupieds = 0;
-    beds.forEach((bed) => {
-      if (bed.bed !== 'person') {
-        numberOfBedsOccupieds++;
-      }
-    });
-    return numberOfBedsOccupieds === beds.length;
-  }
-
-  const canRender = checkRenderView(hotelId, selectedHotelId);
-  const disabled = isDisabled(beds);
-
-  return canRender ? (
-    <Main onClick={() => setSelectedRoomId(id)} disabled={disabled} roomSelected={selectedRoomId === id} >
-      <div>{number}</div>
+  return (
+    <Main onClick={() => { setSelectedRoomId(id); setIsRoomSelected(true); }} selected={selected}>
       <div>
-        {beds.map((bed, index) => (
-          <IconPerson
-            key={index}
-            src={
-              selectedPersonIndex !== null && selectedPersonIndex === number + index && bed.bed !== 'personOccupied'
-                ? personSelected
-                : bed.bed === 'person'
-                  ? person
-                  : personOccupied
-            }
-            alt='person'
-            onClick={() => {
-              setSelectedPersonIndex(selectedPersonIndex === number + index ? null : number + index);
-              setRoomSelected(selectedPersonIndex === number + index ? null : number + index);
-            }}
-          />
-        ))}
+        {name}
+      </div>
+      <div>
+        {beds ? (
+          beds.map((bed, index) => {
+            return (
+              <img
+                key={index}
+                src={bed.bed === 'person' && isRoomSelected && index === 0 ? personSelected : bed.bed === 'personOccupied' ? personOccupied : person}
+                alt='bed'
+              />
+            );
+          })
+        ) : (
+          ''
+        )}
       </div>
     </Main>
-  ) : null;
+  );
 }
 
 const Main = styled.div`
@@ -74,22 +57,7 @@ const Main = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  background-color: ${(props) => props.selected ? colors.selectedItemBackground : 'initial'};
   border: 1px solid ${colors.itemBackground};
   border-radius: 10px;
-
-  background-color: ${(props) => {
-    if (props.disabled) {
-      return colors.disabledBackground;
-    } else if (props.roomSelected) {
-      return colors.selectedItemBackground;
-    } else {
-      return 'initial';
-    }
-  }};
-
-  pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
-`;
-
-const IconPerson = styled.img`
-  margin: 2px;
 `;

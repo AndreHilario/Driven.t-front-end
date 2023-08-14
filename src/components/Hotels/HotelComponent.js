@@ -1,10 +1,25 @@
 import styled from 'styled-components';
 import colors from '../../constants/colors';
 import { filterAccomodationType, sumVacancyOnRooms } from '../../pages/Dashboard/Hotel/utils';
+import { useEffect, useState } from 'react';
+import { getRoomsByHotelId } from '../../services/hotelApi';
+import useToken from '../../hooks/useToken';
 
-export default function HotelComponent({ id, image, name, isSelected, setSelectedHotelId, Rooms }) {
+export default function HotelComponent({ id, image, name, setRooms, selected, setSelectedHotelId }) {
+  const [vacancy, setVacancy] = useState(null);
+  const [accomodation, setAccomodation] = useState(null);
+  const [roomFromThisHote, setRoomFromThisHote] = useState(null);
+  const token = useToken();
+
+  useEffect(async() => {
+    const { Rooms } = await getRoomsByHotelId(token, id);
+    setVacancy(sumVacancyOnRooms(Rooms));
+    setAccomodation(filterAccomodationType(Rooms));
+    setRoomFromThisHote(Rooms);
+  }, []);
+
   return (
-    <Main onClick={() => setSelectedHotelId(id)} isSelected={isSelected}>
+    <Main onClick={() => {setRooms(roomFromThisHote); setSelectedHotelId(id); }} selected={selected}>
       <div>
         <ImageCard>
           <img src={image} alt='name' />
@@ -12,10 +27,10 @@ export default function HotelComponent({ id, image, name, isSelected, setSelecte
         <HotelInformations>
           <h2>{name}</h2>
           <h6><strong>Tipos de acomodação:</strong></h6>
-          <Description>{filterAccomodationType(Rooms)}</Description>
+          <Description>{accomodation}</Description>
           <h6><strong>Vagas disponíveis:</strong></h6>
 
-          <Description>{sumVacancyOnRooms(Rooms)}</Description>
+          <Description>{vacancy}</Description>
         </HotelInformations>
       </div>
     </Main>
@@ -25,7 +40,7 @@ export default function HotelComponent({ id, image, name, isSelected, setSelecte
 const Main = styled.div`
   width: 200px;
   height: 264px;
-  background-color: ${props => props.isSelected ? colors.selectedItemBackground : colors.itemBackground};
+  background-color: ${props => props.selected ? colors.selectedItemBackground : colors.itemBackground};
 
   padding: 15px 0px;
   margin-right: 20px;
@@ -47,6 +62,8 @@ const ImageCard = styled.div`
   margin-bottom: 10px;
 
   img {
+    width: 170px;
+    height: 110px;
     border-radius: 5px;
     width: 170px;
   }
