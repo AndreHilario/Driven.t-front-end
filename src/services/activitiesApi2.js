@@ -3,8 +3,9 @@ import api from './api';
 
 
 //começar apartir das apis 
+//não esquecer de alterar dateApi.js 
 
-
+//post para se inscrever em uma atividade
 export async function postSeat(token, activityId) {
   const body = {
     'activityId': activityId
@@ -24,7 +25,7 @@ export async function postSeat(token, activityId) {
 
 
 
-
+//get para obter as atividades de de um usuario
 export async function getUserSeats(token) {
   try {
     const response = await api.get('/activities/seats/user', {
@@ -42,7 +43,7 @@ export async function getUserSeats(token) {
 
 
 
-
+//get para obter todas as atividades de um dia('dayId')
 export async function getActivitiesByDayId(token, dayId) {
   try {
     const response = await api.get(`/activities/day/${dayId}`, {
