@@ -23,3 +23,11 @@ export async function bookingByRoomId(token, roomId) {
 
   return response.data;
 };
+
+export async function reserveRoom(token, body) {
+  console.log(body);
+  const response = await api.post('/booking', body, {
+    headers: { Authorization: `Bearer ${token}`, },
+  });
+  return response.data;
+};

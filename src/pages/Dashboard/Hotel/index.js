@@ -8,13 +8,17 @@ import { getHotel } from '../../../services/hotelApi';
 import useToken from '../../../hooks/useToken';
 import HotelComponent from '../../../components/Hotels/HotelComponent';
 import Room from '../../../components/Hotels/Room';
+import { reserveRoom } from '../../../services/bookingUserIdApi';
+import { useNavigate } from 'react-router-dom';
 
 export default function Hotel() {
   const enrollment = useEnrollment();
   const ticket = useTicketByUserId();
   const isEnrollmentValid = !enrollment || !ticket || ticket?.status === 'RESERVED';
   const isRoomSelectionValid = ticket?.status === 'PAID' && (ticket.TicketType.isRemote === true || ticket.TicketType.includesHotel === false);
+
   const token = useToken(); 
+  const navigate = useNavigate();
 
   const [hotels, setHotels] = useState(null);
   const [rooms, setRooms] = useState(null);
@@ -25,12 +29,18 @@ export default function Hotel() {
     setHotels(hotel);
   }, []);
 
+  async function makeReserve() {
+    await reserveRoom(token, { roomId: selectedRoomId });
+    navigate('/dashboard/confirmation');
+  }
+
   return (
     <Main>
       {isEnrollmentValid || isRoomSelectionValid ? (
         <ErrorScreen />
       ) : (
         <>
+        
           <h1>Escolha de hotel e quarto</h1>
           <p>Primeiro, escolha seu hotel</p>
 
@@ -48,7 +58,7 @@ export default function Hotel() {
                 );
               })}
             </HotelsContainer>
-          ) : '' }
+          ) : null }
           {rooms?(
             <RoomContainer>
               {rooms.map((room) => {
@@ -62,13 +72,14 @@ export default function Hotel() {
                 );
               })}
             </RoomContainer>
-          ) : ('')
+          ) : null
           }
           {selectedRoomId? (
-            <ButtonContainer>
-              <a href='/dashboard/confirmation'>RESERVAR QUARTO</a>
+            <ButtonContainer onClick={() => makeReserve() }>
+              RESERVAR QUARTO
             </ButtonContainer>
           ) : null }
+
         </>
       )}
     </Main>
@@ -97,15 +108,6 @@ const RoomContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const Block = styled.div`
-  width: 100%;
-  margin: 33px 0px;
-  p{
-    color: ${colors.paragraph};
-    margin: 0;
-  }
-`;
-
 const ButtonContainer = styled.button`
   width: 180px;
   height: 40px;
@@ -117,12 +119,5 @@ const ButtonContainer = styled.button`
   &:hover{
     background-color: ${colors.selectedItemBackground};
     cursor: pointer;
-  }
-  a{
-    color: black;
-    font-size: 14px;
-    margin: auto;
-    font-family: 'Roboto';
-    text-decoration: none;
   }
 `;

@@ -6,58 +6,56 @@ import hotelsFake from '../Hotel/mockHotels';
 import { Link } from 'react-router-dom';
 import { bookingUserId } from '../../../services/bookingUserIdApi';
 import useToken from '../../../hooks/useToken';
+import { filterAccomodationType, sumVacancyOnRooms } from '../Hotel/utils';
+import Room from '../../../components/Hotels/Room';
 
 export default function HotelConfirmation() {
+  const accomodationTypes = ['Single', 'Double', 'Triple'];
+  const [hotelData, setHotelData] = useState({
+    image: '',
+    name: '',
+    occupants: '',
+    roomNumber: '',
+    type: '',
+  });
+
   const token = useToken();
-  const [image, setImage] = useState();
-  const [name, setName] = useState();
-  const [type, setType] = useState();
-  const [number, setNumber] = useState();
-  const [vacancy, setVacancy] = useState();
-  const [booking, setBooking] = useState(null);
-  const { hotelData } = useContext(HotelContext);
-
   useEffect(async() => {
-    const types = ['Single', 'Double', 'Triple'];
-    const hotelSelected = hotelsFake[hotelData.hotelId - 1];
-    const userBooking = await bookingUserId(token);
-    setBooking(userBooking);
-    // setImage(hotelSelected.image);
-    // setName(hotelSelected.name);
-    // setNumber(hotelSelected.Rooms[hotelData.roomId - 1].name);
-    // setType(types[hotelSelected.Rooms.length - 1]);
-    let bedsOccuped = 0;
-    (hotelSelected.Rooms[hotelData.roomId - 1].beds)?.forEach((data) => {
-      if(data.bed === 'personOccupied') {
-        bedsOccuped ++;
-      }
+    const { Room } = await bookingUserId(token);
+    const { name, image } = Room.Hotel;
+    setHotelData({
+      image: image,
+      name: name,
+      occupants: Room.occupants,
+      roomNumber: Room.name,
+      type: accomodationTypes[Room.capacity - 1],
     });
-    setVacancy(bedsOccuped);
-  }, []); 
-  console.log(booking);
-
+  }, []);
   return (
     <Main>
-      <div>
-        <ImageCard>
-          <img src={image} alt='name' />
-        </ImageCard>
-        <HotelInformations>
-          <h2>{name}</h2>
-          <h6><strong>Quarto reservado</strong></h6>
-          <Description>{number} ({type})</Description>
-          <h6><strong>Pessoas no seu quarto</strong></h6>
-          <Description>você e mais {vacancy}</Description>
-        </HotelInformations>
-      </div>
-      <Link to='/dashboard/hotel'>
+      <HotelContainer>
+        <div>
+          <ImageCard>
+            <img src={hotelData.image} alt='name' />
+          </ImageCard>
+          <HotelInformations>
+            <h2>{hotelData.name}</h2>
+            <h6><strong>Quarto reservado</strong></h6>
+            <Description>{hotelData.roomNumber} ({hotelData.type})</Description>
+            <h6><strong>Pessoas no seu quarto</strong></h6>
+            <Description>você{hotelData.occupants < 2 ? '' : 'e mais ' + (hotelData.occupants - 1)}</Description>
+          </HotelInformations>
+        </div>
+      </HotelContainer>
+      <Anchor href='/dashboard/hotel'>
         <ButtonContainer>TROCAR QUARTO</ButtonContainer>
-      </Link>
+      </Anchor>
     </Main>
   );
 };
+const Main = styled.main``;
 
-const Main = styled.div`
+const HotelContainer = styled.div`
   width: 200px;
   height: 264px;
   background-color: ${colors.selectedItemBackground};
@@ -65,7 +63,7 @@ const Main = styled.div`
   padding: 15px 0px;
   margin-right: 20px;
   border-radius: 10px;
-
+  margin-bottom: 40px;
   div {
     h2 {
       font-size: 20px;
@@ -109,17 +107,14 @@ const ButtonContainer = styled.button`
   border: 1px;
   border-radius: 4px;
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);;
-  margin-top: 50px;
 
   &:hover{
     background-color: ${colors.selectedItemBackground};
     cursor: pointer;
   }
-  a{
-    color: black;
-    font-size: 14px;
-    margin: auto;
-    font-family: 'Roboto';
-    text-decoration: none;
-  }
+`;
+
+const Anchor = styled.a`
+background-color: red;
+  margin-top: 50px;
 `;
