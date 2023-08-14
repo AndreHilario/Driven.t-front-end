@@ -3,6 +3,7 @@ import api from './api';
 
 
 //começar apartir das apis 
+// para implementar basta por o componente <AtPages /> no pages de atividades padrão.
 //não esquecer de alterar dateApi.js 
 
 //post para se inscrever em uma atividade
