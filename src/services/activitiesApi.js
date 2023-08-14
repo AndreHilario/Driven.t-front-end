@@ -7,3 +7,4 @@ export async function activitiesApi(token) {
     },
   });
   return response.data;}
+  
