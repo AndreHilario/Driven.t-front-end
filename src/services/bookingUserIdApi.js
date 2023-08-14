@@ -25,8 +25,14 @@ export async function bookingByRoomId(token, roomId) {
 };
 
 export async function reserveRoom(token, body) {
-  console.log(body);
   const response = await api.post('/booking', body, {
+    headers: { Authorization: `Bearer ${token}`, },
+  });
+  return response.data;
+};
+
+export async function deleteBooking(token, bookingId) {
+  const response = await api.delete(`/booking/${bookingId}`, {
     headers: { Authorization: `Bearer ${token}`, },
   });
   return response.data;

@@ -9,7 +9,7 @@ import useToken from '../../hooks/useToken';
 import { calculateOcuppiedRooms } from '../../pages/Dashboard/Hotel/utils';
 
 export default function Room({ room, selected, setSelectedRoomId }) {
-  const { id, name, capacity, hotelId } = room;
+  const { id, name } = room;
   const token = useToken();
   const [beds, setBeds] = useState(null);
   const [isRoomSelected, setIsRoomSelected] = useState(false);
@@ -60,8 +60,4 @@ const Main = styled.div`
   background-color: ${(props) => props.selected ? colors.selectedItemBackground : 'initial'};
   border: 1px solid ${colors.itemBackground};
   border-radius: 10px;
-`;
-
-const IconPerson = styled.img`
-  margin: 2px;
 `;

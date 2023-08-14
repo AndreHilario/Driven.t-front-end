@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getRoomsByHotelId } from '../../services/hotelApi';
 import useToken from '../../hooks/useToken';
 
-export default function HotelComponent({ id, image, name, setRooms }) {
+export default function HotelComponent({ id, image, name, setRooms, selected, setSelectedHotelId }) {
   const [vacancy, setVacancy] = useState(null);
   const [accomodation, setAccomodation] = useState(null);
   const [roomFromThisHote, setRoomFromThisHote] = useState(null);
@@ -19,7 +19,7 @@ export default function HotelComponent({ id, image, name, setRooms }) {
   }, []);
 
   return (
-    <Main onClick={() => setRooms(roomFromThisHote)}>
+    <Main onClick={() => {setRooms(roomFromThisHote); setSelectedHotelId(id); }} selected={selected}>
       <div>
         <ImageCard>
           <img src={image} alt='name' />
@@ -40,7 +40,7 @@ export default function HotelComponent({ id, image, name, setRooms }) {
 const Main = styled.div`
   width: 200px;
   height: 264px;
-  background-color: ${props => props.isSelected ? colors.selectedItemBackground : colors.itemBackground};
+  background-color: ${props => props.selected ? colors.selectedItemBackground : colors.itemBackground};
 
   padding: 15px 0px;
   margin-right: 20px;
@@ -62,6 +62,8 @@ const ImageCard = styled.div`
   margin-bottom: 10px;
 
   img {
+    width: 170px;
+    height: 110px;
     border-radius: 5px;
     width: 170px;
   }
